@@ -21,3 +21,9 @@ while moreResult:
     nextPageToken = result['nextPageToken']
     if 'result' in result:
         activity_result_list.extend(result['result'])
+
+
+result = mc.execute(method='create_custom_activity',
+                    values={'leadId': <leadId>, 'activityTypeId': <activityTypeId>,
+                            'primaryAttributeValue': <primaryAttributeValue>,
+                            'attributes': [{'name': <name>, 'value': <value>}]})

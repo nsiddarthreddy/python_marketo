@@ -47,6 +47,7 @@ class MarketoClient:
                     'get_email_content_by_id':self.get_email_content_by_id,
                     'get_email_template_content_by_id':self.get_email_template_content_by_id,
                     'get_email_templates':self.get_email_templates,
+                    'create_custom_activity': self.create_custom_activity,
                 }
 
                 result = method_map[method](*args,**kargs) 
@@ -236,7 +237,30 @@ class MarketoClient:
             ]
         }
         return self.post(data)
-           
+
+    def create_custom_activity(self, values):
+        self.authenticate()
+        new_activity = dict(values.items())
+        data = {
+            'input': [new_activity]
+        }
+
+        return self._post_custom_activity(data)
+
+
+    def _post_custom_activity(self, data):
+        self.authenticate()
+        args = {
+            'access_token': self.token
+        }
+        data = HttpLib().post("https://" + self.host +
+                              "/rest/v1/activities/external.json",
+                              args, data)
+
+        if not data['success']:
+            raise MarketoException(data['errors'][0])
+        return data['result'][0]['status']
+
     def post(self, data):
         self.authenticate()
         args = {
