@@ -75,6 +75,12 @@ API Ref: http://developers.marketo.com/documentation/rest/createupdate-leads/
 mc.execute(method = 'update_lead', lookupField = 'email', lookupValue = 'test@test.com', values = {'firstName':'Test1', 'lastName':'Test2'})
 ```
 
+Create Custom Activites
+----------
+API Ref: http://developers.marketo.com/documentation/rest/add-custom-activities/
+```python
+mc.execute(method='create_custom_activity',values= {'leadId': leadId, 'activityTypeId': activityTypeId, 'primaryAttributeValue': primaryAttributeValue, 'attributes': [{'name': name, 'value': value}]})
+```
 
 TODO
 ====
