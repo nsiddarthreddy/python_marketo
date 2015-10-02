@@ -3,19 +3,19 @@ import urllib
 import json
 import time
 
+
 class HttpLib:
     max_retries = 3
     sleep_duration = 3
 
-
-    def get(self, endpoint, args = None):
+    def get(self, endpoint, args=None):
         retries = 0
         while True:
             if retries > self.max_retries:
-                return None 
+                return None
             try:
                 url = endpoint
-                if args: 
+                if args:
                     url = endpoint + "?" + urllib.urlencode(args)
                 r = requests.get(url)
                 return r.json()
@@ -24,12 +24,11 @@ class HttpLib:
                 time.sleep(self.sleep_duration)
                 retries += 1
 
-        
     def post(self, endpoint, args, data):
         retries = 0
         while True:
             if retries > self.max_retries:
-                return None 
+                return None
             try:
                 url = endpoint + "?" + urllib.urlencode(args)
                 headers = {'Content-type': 'application/json'}
