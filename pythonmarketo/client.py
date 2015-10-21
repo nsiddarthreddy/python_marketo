@@ -1,6 +1,5 @@
 from pythonmarketo.helper.http_lib import HttpLib
 from pythonmarketo.helper.exceptions import MarketoException
-import json
 import time
 
 
@@ -69,7 +68,7 @@ class MarketoClient:
 
     def authenticate(self):
         if self.valid_until is not None and\
-            self.valid_until > time.time():
+           self.valid_until > time.time():
             return
         args = {
             'grant_type': 'client_credentials',
@@ -161,7 +160,6 @@ class MarketoClient:
             raise MarketoException(data['errors'][0])
         return data['result']
 
-
     def get_leads_by_listId(self, listId=None, batchSize=None, fields=[]):
         self.authenticate()
         args = {
@@ -199,7 +197,6 @@ class MarketoClient:
             raise MarketoException(data['errors'][0])
         return data['result']
 
-
     def get_lead_activity_page(self, activityTypeIds, nextPageToken, batchSize = None, listId = None):
         self.authenticate()
         activityTypeIds = activityTypeIds.split() if type(activityTypeIds) is str else activityTypeIds
@@ -219,7 +216,6 @@ class MarketoClient:
             raise MarketoException(data['errors'][0])
         return data
 
-
     def get_lead_activity(self, activityTypeIds, sinceDatetime, batchSize = None, listId = None):
         activity_result_list = []
         nextPageToken = self.get_paging_token(sinceDatetime = sinceDatetime)
@@ -235,7 +231,6 @@ class MarketoClient:
 
         return activity_result_list
 
-
     def get_paging_token(self, sinceDatetime):
         self.authenticate()
         args = {
@@ -248,29 +243,22 @@ class MarketoClient:
         return data['nextPageToken']
 
 
-    def update_lead(self, lookupField, lookupValue, values):
-        updated_lead = dict(list({lookupField: lookupValue}.items()) + list(values.items()))
+    def update_lead(self, lookupField, values, lookupValue=None):
         data = {
             'action': 'createOrUpdate',
             'lookupField': lookupField,
-            'input': [
-                      updated_lead
-            ]
+            'input': [values]
         }
         return self.post(data)
 
-
     def create_lead(self, lookupField, lookupValue, values):
-        new_lead = dict(list({lookupField : lookupValue}.items()) + list(values.items()))
+        new_lead = dict(list({lookupField: lookupValue}.items()) + list(values.items()))
         data = {
             'action': 'createOnly',
             'lookupField': lookupField,
-            'input': [
-                      new_lead
-            ]
+            'input': [new_lead]
         }
         return self.post(data)
-
 
     def create_custom_activity(self, values):
         self.authenticate()
@@ -279,41 +267,28 @@ class MarketoClient:
             "input": [new_activity]
         }
 
-        return self._post_custom_activity(data)
-
-
-    def _post_custom_activity(self, data):
-        self.authenticate()
-        args = {
-            'access_token': self.token
-        }
-        data = HttpLib().post("https://" + self.host +
-                              "/rest/v1/activities/external.json",
-                              args, data)
-        if not data['success']:
-            raise MarketoException(data['errors'][0])
-        return data['result'][0]['status']
+        api_url = "/rest/v1/activities/external.json"
+        return self._post_custom(data, api_url)
 
     def create_custom_object(self, values, api_name):
         self.authenticate()
         new_activity = dict(values.items())
         data = new_activity
+        api_url = "/rest/v1/customobjects/" + api_name + ".json"
 
-        return self._post_custom_object(data, api_name)
+        return self._post_custom(data, api_url)
 
-
-    def _post_custom_object(self, data, api_name):
+    def _post_custom(self, data, api_url):
         self.authenticate()
         args = {
             'access_token': self.token
         }
         data = HttpLib().post("https://" + self.host +
-                              "/rest/v1/customobjects/" + api_name + ".json",
+                              api_url,
                               args, data)
-        print data
         if not data['success']:
             raise MarketoException(data['errors'][0])
-        return data['result'][0]['status']
+        return data
 
     def post(self, data):
         self.authenticate()
@@ -323,4 +298,4 @@ class MarketoClient:
         }
         data = HttpLib().post("https://" + self.host + "/rest/v1/leads.json" , args, data)
         if not data['success'] : raise MarketoException(data['errors'][0])
-        return data['result'][0]['status']
+        return data
