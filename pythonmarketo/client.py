@@ -50,6 +50,7 @@ class MarketoClient:
                     'get_email_templates': self.get_email_templates,
                     'create_custom_activity': self.create_custom_activity,
                     'create_custom_object': self.create_custom_object,
+                    'associate_lead': self.associate_lead,
                 }
 
                 result = method_map[method](*args, **kargs)
@@ -278,14 +279,20 @@ class MarketoClient:
 
         return self._post_custom(data, api_url)
 
-    def _post_custom(self, data, api_url):
+    def associate_lead(self, lead_id, marketo_cookie):
+        api_url = "/rest/v1/leads/" + lead_id + "/associate.json"
+        data = None
+        marketo_cookie = marketo_cookie.replace("&", "%26")
+        return self._post_custom(data, api_url, marketo_cookie)
+
+    def _post_custom(self, data, api_url, marketo_cookie=None):
         self.authenticate()
         args = {
             'access_token': self.token
         }
         data = HttpLib().post("https://" + self.host +
                               api_url,
-                              args, data)
+                              args, data, marketo_cookie)
         if not data['success']:
             raise MarketoException(data['errors'][0])
         return data

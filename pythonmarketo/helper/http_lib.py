@@ -24,13 +24,16 @@ class HttpLib:
                 time.sleep(self.sleep_duration)
                 retries += 1
 
-    def post(self, endpoint, args, data):
+    def post(self, endpoint, args, data, marketo_cookie=None):
         retries = 0
         while True:
             if retries > self.max_retries:
                 return None
             try:
-                url = endpoint + "?" + urllib.urlencode(args)
+                if marketo_cookie is not None:
+                    url = endpoint + "?" + urllib.urlencode(args) + "&cookie=" + marketo_cookie
+                else:
+                    url = endpoint + "?" + urllib.urlencode(args)
                 headers = {'Content-type': 'application/json'}
                 r = requests.post(url, data=json.dumps(data), headers=headers)
                 return r.json()

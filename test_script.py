@@ -1,10 +1,9 @@
 from pythonmarketo.client import MarketoClient
 import json
 
-mc = MarketoClient(host = <HOST>,
-                   client_id = <CLIENT_ID>,
-                   client_secret = <CLIENT_SECRET>)
-
+mc = MarketoClient(host="",
+                   client_id="",
+                   client_secret="")
 
 activity_result_list = []
 nextPageToken = mc.get_paging_token(sinceDatetime="2015-01-01")
