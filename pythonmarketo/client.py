@@ -43,6 +43,7 @@ class MarketoClient:
                     'get_lead_activity': self.get_lead_activity,
                     'get_paging_token': self.get_paging_token,
                     'update_lead': self.update_lead,
+                    'bulk_update_lead': self.bulk_update_lead,
                     'create_lead': self.create_lead,
                     'get_lead_activity_page': self.get_lead_activity_page,
                     'get_email_content_by_id': self.get_email_content_by_id,
@@ -243,6 +244,14 @@ class MarketoClient:
         if not data['success'] : raise MarketoException(data['errors'][0])
         return data['nextPageToken']
 
+
+    def bulk_update_lead(self, lookupField, values):
+        data = {
+            'action': 'createOrUpdate',
+            'lookupField': lookupField,
+            'input': values
+        }
+        return self.post(data)
 
     def update_lead(self, lookupField, values, lookupValue=None):
         data = {
