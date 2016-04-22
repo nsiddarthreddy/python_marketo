@@ -75,6 +75,15 @@ API Ref: http://developers.marketo.com/documentation/rest/createupdate-leads/
 mc.execute(method = 'update_lead', lookupField = 'email', lookupValue = 'test@test.com', values = {'firstName':'Test1', 'lastName':'Test2'})
 ```
 
+Bulk Update Lead
+------------
+API Ref: http://developers.marketo.com/documentation/rest/createupdate-leads/
+```python
+mc.execute(method = 'bulk_update_leads', lookupField = 'email', , values = [{'firstName':'Test1', 'lastName':'Test2'} , {'firstName':'Test3', 'lastName':'Test4'})
+
+Note: Maximum 300 leads can be updated in one api call.
+```
+
 Create Custom Activites
 ----------
 API Ref: http://developers.marketo.com/documentation/rest/add-custom-activities/
